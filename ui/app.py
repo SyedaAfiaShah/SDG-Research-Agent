@@ -18,7 +18,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(os.path.abs
 # Custom CSS for modern, premium look (glassmorphism, Google fonts, polished badges, and charts)
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
@@ -26,56 +26,100 @@ st.markdown("""
     
     /* Premium Title Header */
     .title-text {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 2.6rem;
+        font-weight: 800;
         background: linear-gradient(135deg, #0d9488, #2563eb);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 0.5rem;
+        letter-spacing: -0.025em;
     }
     
     .subtitle-text {
-        color: #64748b;
+        color: var(--text-color);
+        opacity: 0.8;
         font-size: 1.1rem;
         margin-bottom: 2rem;
     }
     
-    /* Agent Cards */
+    /* Agent Cards with premium glassmorphism for light/dark modes */
     .agent-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(226, 232, 240, 0.8);
-        border-radius: 12px;
-        padding: 1rem 1.5rem;
+        background: rgba(128, 128, 128, 0.08);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(128, 128, 128, 0.18);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
         margin-bottom: 0.75rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .agent-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(13, 148, 136, 0.15);
+        border-color: #0d9488;
     }
     
-    /* Polished Badges */
+    .agent-card-title {
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .agent-card-desc {
+        font-size: 0.85rem;
+        color: var(--text-color);
+        opacity: 0.7;
+        margin-top: 0.5rem;
+        line-height: 1.4;
+    }
+    
+    /* Polished Badges - semi-transparent and neon for contrast */
     .badge {
         display: inline-block;
         padding: 0.25rem 0.6rem;
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 0.72rem;
+        font-weight: 700;
         border-radius: 9999px;
         text-transform: uppercase;
+        letter-spacing: 0.05em;
         margin-left: 0.5rem;
     }
-    .badge-pending { background-color: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
-    .badge-running { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; animation: pulse 2s infinite; }
-    .badge-complete { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .badge-pending { 
+        background-color: rgba(100, 116, 139, 0.15); 
+        color: #94a3b8; 
+        border: 1px solid rgba(100, 116, 139, 0.3); 
+    }
+    .badge-running { 
+        background-color: rgba(37, 99, 235, 0.15); 
+        color: #60a5fa; 
+        border: 1px solid rgba(37, 99, 235, 0.5); 
+        animation: pulse 2s infinite; 
+    }
+    .badge-complete { 
+        background-color: rgba(22, 163, 74, 0.15); 
+        color: #4ade80; 
+        border: 1px solid rgba(22, 163, 74, 0.5); 
+    }
     
     /* Recommendation Cards */
     .rec-card {
-        background: #ffffff;
-        border-left: 5px solid #0d9488;
-        border-radius: 0 12px 12px 0;
-        padding: 1.25rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.02);
-        border-top: 1px solid #f1f5f9;
-        border-right: 1px solid #f1f5f9;
-        border-bottom: 1px solid #f1f5f9;
+        background: rgba(128, 128, 128, 0.05);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(128, 128, 128, 0.15);
+        border-left: 6px solid #0d9488;
+        border-radius: 0 16px 16px 0;
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        transition: all 0.2s ease;
+    }
+    .rec-card:hover {
+        transform: translateX(4px);
     }
     .rec-priority-high { border-left-color: #ef4444; }
     .rec-priority-medium { border-left-color: #f59e0b; }
@@ -83,37 +127,44 @@ st.markdown("""
     
     /* SDG Grid Item */
     .sdg-grid-item {
-        background: #fafafa;
-        border: 1px solid #f1f5f9;
-        border-radius: 8px;
-        padding: 1rem;
+        background: rgba(128, 128, 128, 0.05);
+        border: 1px solid rgba(128, 128, 128, 0.15);
+        border-radius: 12px;
+        padding: 1.25rem;
         text-align: center;
-        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.01);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
+        transition: transform 0.2s ease;
+    }
+    .sdg-grid-item:hover {
+        transform: scale(1.03);
     }
     
     .sdg-number {
-        font-size: 1.75rem;
-        font-weight: 700;
+        font-size: 1.8rem;
+        font-weight: 800;
         color: #ffffff;
         background-color: #0d9488;
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
+        width: 52px;
+        height: 52px;
+        line-height: 52px;
         border-radius: 50%;
-        margin: 0 auto 0.5rem auto;
+        margin: 0 auto 0.75rem auto;
+        box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
     }
     
     /* Custom horizontal progress score bar */
     .eval-bar-container {
         width: 100%;
-        background-color: #e2e8f0;
-        border-radius: 8px;
+        background-color: rgba(128, 128, 128, 0.2);
+        border-radius: 999px;
         margin-bottom: 0.5rem;
-        height: 12px;
+        height: 10px;
+        overflow: hidden;
     }
     .eval-bar-fill {
         height: 100%;
-        border-radius: 8px;
+        border-radius: 999px;
+        transition: width 0.8s ease-in-out;
     }
     
     @keyframes pulse {
@@ -127,30 +178,30 @@ st.markdown("""
 def render_score_bar(label, score, justification):
     # Determine color
     if score >= 4:
-        fill_color = "#16a34a"  # Green
-        bg_label = "rgba(22, 163, 74, 0.1)"
-        text_color = "#16a34a"
+        fill_color = "#10b981"  # Emerald Green
+        bg_label = "rgba(16, 185, 129, 0.15)"
+        text_color = "#10b981"
     elif score >= 3:
         fill_color = "#f59e0b"  # Amber
-        bg_label = "rgba(245, 158, 11, 0.1)"
-        text_color = "#d97706"
+        bg_label = "rgba(245, 158, 11, 0.15)"
+        text_color = "#f59e0b"
     else:
         fill_color = "#ef4444"  # Red
-        bg_label = "rgba(239, 68, 68, 0.1)"
+        bg_label = "rgba(239, 68, 68, 0.15)"
         text_color = "#ef4444"
         
     percentage = (score / 5) * 100
     
     st.markdown(f"""
         <div style="margin-bottom: 1.25rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                <span style="font-weight: 600; color: #334155; font-size: 0.95rem;">{label}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <span style="font-weight: 600; color: var(--text-color); opacity: 0.9; font-size: 0.95rem;">{label}</span>
                 <span class="badge" style="background-color: {bg_label}; color: {text_color}; border: 1px solid {fill_color}; margin: 0;">Score: {score}/5</span>
             </div>
             <div class="eval-bar-container">
                 <div class="eval-bar-fill" style="width: {percentage}%; background-color: {fill_color};"></div>
             </div>
-            <p style="color: #64748b; font-size: 0.85rem; margin: 0; line-height: 1.3;">{justification}</p>
+            <p style="color: var(--text-color); opacity: 0.7; font-size: 0.85rem; margin: 0; line-height: 1.4;">{justification}</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -190,25 +241,24 @@ if "completed" not in st.session_state:
 st.sidebar.markdown("<h2 style='font-weight: 700; color: #0d9488;'>🌍 SDG Config Panel</h2>", unsafe_allow_html=True)
 st.sidebar.write("Configure the underlying LLM orchestrator and parameters.")
 
-# Model Selection
-selected_provider = st.sidebar.selectbox("LLM Provider", ["Gemini", "OpenAI"], index=0)
+# Display Provider (Hardcoded/Informative)
+st.sidebar.markdown("""
+    <div style="background-color: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; margin-bottom: 1rem;">
+        <span style="font-size: 0.85rem; font-weight: 600; color: #0d9488;">LLM Provider:</span>
+        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-color); margin-left: 0.25rem;">Google Gemini</span>
+    </div>
+""", unsafe_allow_html=True)
 
-if selected_provider == "Gemini":
-    models = ["gemini-2.5-flash", "gemini-3.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-lite"]
-    default_idx = models.index(Config.LLM_MODEL) if Config.LLM_MODEL in models else 0
-    selected_model = st.sidebar.selectbox("Model Selection", models, index=default_idx)
-    # Apply to config dynamic values
-    Config.LLM_PROVIDER = "gemini"
-    Config.LLM_MODEL = selected_model
-    os.environ["LLM_PROVIDER"] = "gemini"
-    os.environ["LLM_MODEL"] = selected_model
-else:
-    models = ["gpt-4o", "gpt-4o-mini", "o1-mini"]
-    selected_model = st.sidebar.selectbox("Model Selection", models, index=0)
-    Config.LLM_PROVIDER = "openai"
-    Config.LLM_MODEL = selected_model
-    os.environ["LLM_PROVIDER"] = "openai"
-    os.environ["LLM_MODEL"] = selected_model
+# Model Selection
+models = ["gemini-2.5-flash", "gemini-3.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-lite"]
+default_idx = models.index(Config.LLM_MODEL) if Config.LLM_MODEL in models else 0
+selected_model = st.sidebar.selectbox("Model Selection", models, index=default_idx)
+
+# Apply to config dynamic values
+Config.LLM_PROVIDER = "gemini"
+Config.LLM_MODEL = selected_model
+os.environ["LLM_PROVIDER"] = "gemini"
+os.environ["LLM_MODEL"] = selected_model
 
 # Retrieval Results slider
 max_results = st.sidebar.slider("Max RAG Retrieval Results", min_value=3, max_value=10, value=Config.MAX_RETRIEVAL_RESULTS)
@@ -232,7 +282,7 @@ query_input = st.text_area(
 st.session_state.query = query_input
 
 # Run button
-run_clicked = st.button("🚀 Run Research Agents Pipeline", use_container_width=True, disabled=st.session_state.running)
+run_clicked = st.button("🚀 Run Research Agents Pipeline", use_container_width=True, disabled=st.session_state.running, type="primary")
 
 # Helper function to stream LangGraph and update states
 def stream_graph(inputs, config, resume=False):
@@ -375,45 +425,45 @@ def get_badge_html(status):
 with col1:
     st.markdown(f"""
         <div class="agent-card">
-            <div style="font-weight: 600; color: #1e293b;">Research Agent {get_badge_html(st.session_state.agent_status["run_research"])}</div>
-            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Searches knowledge base and academic indexes.</div>
+            <div class="agent-card-title">Research Agent {get_badge_html(st.session_state.agent_status["run_research"])}</div>
+            <div class="agent-card-desc">Searches knowledge base and academic indexes.</div>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown(f"""
         <div class="agent-card">
-            <div style="font-weight: 600; color: #1e293b;">Data Analyst Agent {get_badge_html(st.session_state.agent_status["run_data_analysis"])}</div>
-            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Extracts statistical correlations & indicators.</div>
+            <div class="agent-card-title">Data Analyst Agent {get_badge_html(st.session_state.agent_status["run_data_analysis"])}</div>
+            <div class="agent-card-desc">Extracts statistical correlations & indicators.</div>
         </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown(f"""
         <div class="agent-card">
-            <div style="font-weight: 600; color: #1e293b;">Policy Analyst Agent {get_badge_html(st.session_state.agent_status["run_policy_analysis"])}</div>
-            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Drafts policy opportunities & action frames.</div>
+            <div class="agent-card-title">Policy Analyst Agent {get_badge_html(st.session_state.agent_status["run_policy_analysis"])}</div>
+            <div class="agent-card-desc">Drafts policy opportunities & action frames.</div>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown(f"""
         <div class="agent-card">
-            <div style="font-weight: 600; color: #1e293b;">SDG Alignment Agent {get_badge_html(st.session_state.agent_status["run_sdg_alignment"])}</div>
-            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Maps goals, targets, and SDG indicator codes.</div>
+            <div class="agent-card-title">SDG Alignment Agent {get_badge_html(st.session_state.agent_status["run_sdg_alignment"])}</div>
+            <div class="agent-card-desc">Maps goals, targets, and SDG indicator codes.</div>
         </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown(f"""
         <div class="agent-card">
-            <div style="font-weight: 600; color: #1e293b;">Report Writer Agent {get_badge_html(st.session_state.agent_status["run_report_writer"])}</div>
-            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Assembles results into structured Pydantic brief.</div>
+            <div class="agent-card-title">Report Writer Agent {get_badge_html(st.session_state.agent_status["run_report_writer"])}</div>
+            <div class="agent-card-desc">Assembles results into structured Pydantic brief.</div>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown(f"""
         <div class="agent-card">
-            <div style="font-weight: 600; color: #1e293b;">Evaluator (Judge) Agent {get_badge_html(st.session_state.agent_status["run_evaluation"])}</div>
-            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Validates completeness, citations, & scoring.</div>
+            <div class="agent-card-title">Evaluator (Judge) Agent {get_badge_html(st.session_state.agent_status["run_evaluation"])}</div>
+            <div class="agent-card-desc">Validates completeness, citations, & scoring.</div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -532,13 +582,13 @@ if st.session_state.completed:
             st.markdown(f"""
                 <div class="rec-card {card_class}">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <span style="font-weight: 600; font-size: 1.05rem; color: #0f172a;">{title}</span>
+                        <span style="font-weight: 600; font-size: 1.05rem; color: var(--text-color);">{title}</span>
                         <div>
-                            <span class="badge" style="background-color: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; margin-right: 0.25rem;">{timeframe}</span>
+                            <span class="badge" style="background-color: rgba(128, 128, 128, 0.15); color: var(--text-color); border: 1px solid rgba(128, 128, 128, 0.3); margin-right: 0.25rem;">{timeframe}</span>
                             <span class="badge {card_class.replace('rec-', 'badge-')}">{priority} Priority</span>
                         </div>
                     </div>
-                    <p style="color: #475569; font-size: 0.9rem; line-height: 1.4; margin: 0;">{desc}</p>
+                    <p style="color: var(--text-color); opacity: 0.8; font-size: 0.9rem; line-height: 1.4; margin: 0;">{desc}</p>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -556,8 +606,8 @@ if st.session_state.completed:
                     st.markdown(f"""
                         <div class="sdg-grid-item">
                             <div class="sdg-number">{mapping.get('sdg_number')}</div>
-                            <div style="font-weight: 600; font-size: 0.85rem; color: #0f172a; margin-bottom: 0.25rem;">{mapping.get('sdg_name')}</div>
-                            <p style="color: #64748b; font-size: 0.75rem; line-height: 1.2; margin: 0; text-align: left;">
+                            <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-color); margin-bottom: 0.25rem;">{mapping.get('sdg_name')}</div>
+                            <p style="color: var(--text-color); opacity: 0.75; font-size: 0.75rem; line-height: 1.2; margin: 0; text-align: left;">
                                 <strong>Relevance:</strong> {mapping.get('relevance_explanation')[:100]}...
                             </p>
                         </div>
@@ -601,27 +651,27 @@ if st.session_state.completed:
         col_s1, col_s2 = st.columns([1, 2])
         with col_s1:
             st.markdown(f"""
-                <div style="background-color: #fafafa; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 0.9rem; font-weight: 500; color: #64748b; margin-bottom: 0.25rem;">Overall Judge Score</div>
-                    <div style="font-size: 3.5rem; font-weight: 800; color: {'#16a34a' if overall_score >= 3.8 else '#ef4444' if overall_score < 3.0 else '#f59e0b'};">{overall_score:.1f} <span style="font-size: 1.5rem; font-weight: 500; color: #94a3b8;">/ 5.0</span></div>
+                <div style="background-color: rgba(128, 128, 128, 0.05); border: 1px solid rgba(128, 128, 128, 0.15); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-color); opacity: 0.7; margin-bottom: 0.25rem;">Overall Judge Score</div>
+                    <div style="font-size: 3.5rem; font-weight: 800; color: {'#10b981' if overall_score >= 3.8 else '#ef4444' if overall_score < 3.0 else '#f59e0b'};">{overall_score:.1f} <span style="font-size: 1.5rem; font-weight: 500; color: var(--text-color); opacity: 0.5;">/ 5.0</span></div>
                 </div>
             """, unsafe_allow_html=True)
             
         with col_s2:
             if quality_warning or overall_score < 3.0:
                 st.markdown("""
-                    <div style="background-color: #fef2f2; border: 1px solid #fee2e2; border-radius: 12px; padding: 1.25rem; height: 100%;">
+                    <div style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 1.25rem; height: 100%;">
                         <div style="font-weight: 600; color: #ef4444; margin-bottom: 0.25rem;">⚠️ Quality Warning Banner</div>
-                        <p style="color: #991b1b; font-size: 0.85rem; margin: 0; line-height: 1.4;">
+                        <p style="color: var(--text-color); opacity: 0.9; font-size: 0.85rem; margin: 0; line-height: 1.4;">
                             This policy brief scored below the target quality threshold. The judge suggests expanding the RAG knowledge base or refining the analysis criteria query.
                         </p>
                     </div>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
-                    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.25rem; height: 100%;">
-                        <div style="font-weight: 600; color: #16a34a; margin-bottom: 0.25rem;">✅ Quality Target Passed</div>
-                        <p style="color: #166534; font-size: 0.85rem; margin: 0; line-height: 1.4;">
+                    <div style="background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1.25rem; height: 100%;">
+                        <div style="font-weight: 600; color: #10b981; margin-bottom: 0.25rem;">✅ Quality Target Passed</div>
+                        <p style="color: var(--text-color); opacity: 0.9; font-size: 0.85rem; margin: 0; line-height: 1.4;">
                             This brief meets or exceeds the required factual grounding, recommendation, and completion thresholds. Ready for administrative distribution.
                         </p>
                     </div>
