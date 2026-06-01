@@ -253,12 +253,14 @@ def stream_graph(inputs, config, resume=False):
     if not resume:
         st.session_state.completed = False
         st.session_state.agent_status = {n: "pending" for n in nodes_order}
+        st.session_state.agent_status["run_research"] = "running"
         st.session_state.agent_outputs = {n: "" for n in nodes_order}
         st.session_state.graph_state = {}
         # Start graph from START
         stream = graph_app.stream(inputs, config, stream_mode="updates")
     else:
         # Resume graph from checkpoint
+        st.session_state.agent_status["run_report_writer"] = "running"
         stream = graph_app.stream(None, config, stream_mode="updates")
         
     try:
@@ -267,6 +269,19 @@ def stream_graph(inputs, config, resume=False):
             for node_name, state_delta in update.items():
                 if node_name in st.session_state.agent_status:
                     st.session_state.agent_status[node_name] = "complete"
+                    
+                    # Set the next node to running state
+                    if node_name == "run_research":
+                        st.session_state.agent_status["run_data_analysis"] = "running"
+                    elif node_name == "run_data_analysis":
+                        st.session_state.agent_status["run_policy_analysis"] = "running"
+                    elif node_name == "run_policy_analysis":
+                        st.session_state.agent_status["run_sdg_alignment"] = "running"
+                    elif node_name == "run_sdg_alignment":
+                        # Suspended at checkpoint
+                        pass
+                    elif node_name == "run_report_writer":
+                        st.session_state.agent_status["run_evaluation"] = "running"
                     
                     # Store node raw results
                     if node_name == "run_research":
@@ -327,8 +342,15 @@ if run_clicked:
         "retry_count": 0
     }
     
-    # Set research to running and rerun to show immediately
-    st.session_state.agent_status["run_research"] = "running"
+    # Set research to running initially
+    st.session_state.agent_status = {
+        "run_research": "running",
+        "run_data_analysis": "pending",
+        "run_policy_analysis": "pending",
+        "run_sdg_alignment": "pending",
+        "run_report_writer": "pending",
+        "run_evaluation": "pending"
+    }
     st.session_state.running = True
     
     # Run the streaming in background loop (handled synchronously in this streamlit thread)
