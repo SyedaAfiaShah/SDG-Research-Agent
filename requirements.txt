@@ -1,0 +1,12 @@
+crewai
+langgraph
+langchain
+langchain-openai
+langchain-google-genai
+chromadb
+streamlit
+pydantic>=2.0
+python-dotenv
+requests
+sentence-transformers
+pypdf
